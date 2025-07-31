@@ -1,6 +1,7 @@
 package br.alura.ForumHub.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import br.alura.ForumHub.domain.valueobject.Username;
@@ -37,5 +38,9 @@ public class User {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public boolean isActive() {
+    return isActive;
   }
 }
