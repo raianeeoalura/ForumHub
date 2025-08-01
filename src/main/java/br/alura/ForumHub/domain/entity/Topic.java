@@ -1,7 +1,6 @@
 package br.alura.ForumHub.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 import br.alura.ForumHub.domain.valueobject.Slug;

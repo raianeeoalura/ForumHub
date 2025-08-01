@@ -42,7 +42,7 @@ public class TopicRepositoryImpl implements TopicRepository {
         topic.getViewCount(),
         topic.getCreatedAt(),
         topic.getIsActive(),
-        topic.getUpdatedAt());
+        topic.getUpdatedAt(), List.of());
 
     TopicDB savedTopic = topicJpaRepository.save(entity);
     return toDomain(savedTopic);
@@ -56,13 +56,8 @@ public class TopicRepositoryImpl implements TopicRepository {
 
   @Override
   public Optional<Topic> findBySlug(String slug) {
-    var topicDatabase = topicJpaRepository.findBySlug(slug);
-    if (topicDatabase.isEmpty()) {
-      return Optional.empty();
-    }
-
-    var topic = toDomain(topicDatabase.get());
-    return Optional.of(topic);
+    var topicDatabase = topicJpaRepository.findBySlug(slug).map(this::toDomain);
+    return topicDatabase;
   }
 
   private Topic toDomain(TopicDB dbTopic) {

@@ -57,6 +57,9 @@ public class UserDB implements UserDetails {
   @OneToMany(mappedBy = "author")
   private List<TopicDB> topics;
 
+  @OneToMany(mappedBy = "author")
+  private List<AnswerDB> answers;
+
   public UserDB(User user) {
     this.id = user.getId();
     this.name = user.getName();
@@ -89,5 +92,10 @@ public class UserDB implements UserDetails {
   public void addTopic(TopicDB topic) {
     topic.setAuthor(this);
     topics.add(topic);
+  }
+
+  public void addAnswer(AnswerDB answer) {
+    answer.setAuthor(this);
+    answers.add(answer);
   }
 }

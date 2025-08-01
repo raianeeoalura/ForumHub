@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import br.alura.ForumHub.infra.persistence.entity.AnswerDB;
 import br.alura.ForumHub.infra.persistence.entity.TopicDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,6 +31,9 @@ public class UserRepositoryImpl implements UserRepository {
   @Autowired
   private TopicJpaRepository topicJpaRepository;
 
+  @Autowired
+  private AnswerJpaRepository answerJpaRepository;
+
   public UserDB findByLogin(String username) {
     return userJpaRepository.findByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
@@ -42,6 +46,7 @@ public class UserRepositoryImpl implements UserRepository {
   @Override
   public User save(User user) {
     List<TopicDB> topics = topicJpaRepository.findByAuthorId(user.getId());
+    List<AnswerDB> answers = answerJpaRepository.findByAuthorId(user.getId());
 
     UserDB entity = new UserDB(
         null,
@@ -51,7 +56,8 @@ public class UserRepositoryImpl implements UserRepository {
         user.getPassword(),
         user.getCreatedAt(),
         user.isActive(),
-        topics);
+        topics,
+        answers);
 
     UserDB savedUser = userJpaRepository.save(entity);
 
@@ -98,7 +104,8 @@ public class UserRepositoryImpl implements UserRepository {
         user.getPassword(),
         user.getCreatedAt(),
         user.isActive(),
-        topics.stream().map(TopicDB::new).toList());
+        topics.stream().map(TopicDB::new).toList(),
+        List.of());
   }
 
 }

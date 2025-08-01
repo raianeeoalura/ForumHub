@@ -1,0 +1,1 @@
+ALTER TABLE answers ADD COLUMN view_count INT DEFAULT 0;
