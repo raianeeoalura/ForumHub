@@ -107,7 +107,7 @@ public class CreateAnswerUseCaseTest {
     var user = createUser();
     var domainTopic = new Topic("Test Topic", "This is a test topic content", user.getId());
     domainTopic.setActive(false);
-    var topic = topicRepository.save(domainTopic);
+    var topic = topicRepository.create(domainTopic);
 
     var answerData = new CreateAnswerRequest(
         "This is a test answer content",
@@ -125,6 +125,6 @@ public class CreateAnswerUseCaseTest {
 
   private Topic createTopic(UUID userId) {
     var topic = new Topic("Test Topic", "This is a test topic content", userId);
-    return topicRepository.save(topic);
+    return topicRepository.create(topic);
   }
 }

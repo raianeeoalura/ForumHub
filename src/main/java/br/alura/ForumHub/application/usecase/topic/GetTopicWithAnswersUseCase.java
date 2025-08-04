@@ -10,10 +10,12 @@ import br.alura.ForumHub.domain.entity.Answer;
 import br.alura.ForumHub.domain.repository.AnswerRepository;
 import br.alura.ForumHub.domain.repository.TopicRepository;
 import br.alura.ForumHub.domain.valueobject.TopicWithAnswers;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GetTopicWithAnswersUseCase {
   public final static int DEFAULT_PAGE = 1;
   public final static int DEFAULT_SIZE = 10;
@@ -21,7 +23,7 @@ public class GetTopicWithAnswersUseCase {
   private final TopicRepository topicRepository;
   private final AnswerRepository answerRepository;
 
-  public record GetTopicWithAnswersRequest(String topicId, int page, int size) {
+  public static record GetTopicWithAnswersRequest(String topicId, int page, int size) {
   }
 
   public TopicWithAnswers execute(String strTopicId) {
@@ -30,7 +32,7 @@ public class GetTopicWithAnswersUseCase {
         .orElseThrow(() -> new ResourceNotFoundException("Topic not found with ID: " + topicId));
 
     topic.incrementViewCount();
-    topicRepository.save(topic);
+    topicRepository.update(topic);
 
     List<Answer> answers = answerRepository.findManyByTopicId(topicId, DEFAULT_PAGE, DEFAULT_SIZE);
 
@@ -43,7 +45,7 @@ public class GetTopicWithAnswersUseCase {
         .orElseThrow(() -> new ResourceNotFoundException("Topic not found with ID: " + topicId));
 
     topic.incrementViewCount();
-    topicRepository.save(topic);
+    topicRepository.update(topic);
 
     List<Answer> answers = answerRepository.findManyByTopicId(topicId, request.page(), request.size());
 

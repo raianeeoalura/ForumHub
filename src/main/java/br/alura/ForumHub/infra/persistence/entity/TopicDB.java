@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 
 import br.alura.ForumHub.domain.entity.Topic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -59,7 +60,7 @@ public class TopicDB {
   @Column(name = "updated_at", nullable = true)
   private LocalDateTime updatedAt;
 
-  @OneToMany(mappedBy = "topic")
+  @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
   private List<AnswerDB> answers;
 
   public TopicDB(Topic topic) {

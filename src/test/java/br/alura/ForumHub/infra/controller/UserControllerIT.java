@@ -1,4 +1,4 @@
-package br.alura.ForumHub;
+package br.alura.ForumHub.infra.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

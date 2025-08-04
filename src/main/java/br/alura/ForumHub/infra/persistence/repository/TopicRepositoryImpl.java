@@ -3,8 +3,11 @@ package br.alura.ForumHub.infra.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -30,11 +33,30 @@ public class TopicRepositoryImpl implements TopicRepository {
   }
 
   @Override
-  public Topic save(Topic topic) {
+  public Topic create(Topic topic) {
     UserDB author = new UserDB(topic.getAuthorId());
 
     TopicDB entity = new TopicDB(
         null,
+        topic.getTitle(),
+        topic.getContent(),
+        topic.getSlug().getValue(),
+        author,
+        topic.getViewCount(),
+        topic.getCreatedAt(),
+        topic.getIsActive(),
+        topic.getUpdatedAt(), List.of());
+
+    TopicDB savedTopic = topicJpaRepository.save(entity);
+    return toDomain(savedTopic);
+  }
+
+  @Override
+  public Topic update(Topic topic) {
+    UserDB author = new UserDB(topic.getAuthorId());
+
+    TopicDB entity = new TopicDB(
+        topic.getId(),
         topic.getTitle(),
         topic.getContent(),
         topic.getSlug().getValue(),
@@ -58,6 +80,13 @@ public class TopicRepositoryImpl implements TopicRepository {
   public Optional<Topic> findBySlug(String slug) {
     var topicDatabase = topicJpaRepository.findBySlug(slug).map(this::toDomain);
     return topicDatabase;
+  }
+
+  @Override
+  public List<Topic> findMany(int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    var topicsDB = topicJpaRepository.findAll(pageable);
+    return topicsDB.stream().map(this::toDomain).collect(Collectors.toList());
   }
 
   private Topic toDomain(TopicDB dbTopic) {

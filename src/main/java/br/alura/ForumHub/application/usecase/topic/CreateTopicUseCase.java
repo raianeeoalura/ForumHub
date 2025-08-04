@@ -34,6 +34,6 @@ public class CreateTopicUseCase {
     }
 
     Topic topic = new Topic(request.title, request.content, author.getId());
-    return topicRepository.save(topic);
+    return topicRepository.create(topic);
   }
 }

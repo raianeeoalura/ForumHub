@@ -4,15 +4,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import br.alura.ForumHub.domain.valueobject.Slug;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@Getter
+@Data
 public class Topic {
 
   private UUID id;
@@ -35,30 +31,6 @@ public class Topic {
     this.updatedAt = null;
     this.isActive = true;
     this.viewCount = 0;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-  }
-
-  public void setActive(boolean isActive) {
-    this.isActive = isActive;
-  }
-
-  public void setViewCount(int viewCount) {
-    this.viewCount = viewCount;
   }
 
   public void incrementViewCount() {
