@@ -1,6 +1,7 @@
 package br.alura.ForumHub.factory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
@@ -13,6 +14,9 @@ public class UserFactory {
 
   @Autowired
   private UserRepositoryImpl userRepository;
+
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   private static Faker faker = new Faker();
 
@@ -33,6 +37,13 @@ public class UserFactory {
 
   public User persisteUser() {
     User user = makeUser();
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    return userRepository.save(user);
+  }
+
+  public User persisteUser(String name, String username, String email, String password) {
+    User user = makeUser(name, username, email, password);
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
     return userRepository.save(user);
   }
 }

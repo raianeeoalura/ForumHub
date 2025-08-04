@@ -1,17 +1,18 @@
 package br.alura.ForumHub.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import br.alura.ForumHub.domain.valueobject.Username;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class User {
 
   private UUID id;
