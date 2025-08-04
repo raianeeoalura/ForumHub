@@ -29,8 +29,8 @@ public class CreateTopicUseCaseTest {
 
   @BeforeEach
   void clearDatabase() {
-    userRepository.deleteAll();
     topicRepository.deleteAll();
+    userRepository.deleteAll();
   }
 
   @Test

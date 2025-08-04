@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import br.alura.ForumHub.factory.TopicFactory;
@@ -57,6 +58,7 @@ class AnswerControllerIT {
 
   @Test
   @DisplayName("Should create an answer for a topic")
+  @WithMockUser
   void testCreateAnswer() throws Exception {
     var user = userFactory.persisteUser();
     var topic = topicFactory.persisteTopic(user.getId());

@@ -16,13 +16,15 @@ import br.alura.ForumHub.application.exception.ResourceNotFoundException;
 import br.alura.ForumHub.application.exception.UserNotFoundException;
 import br.alura.ForumHub.application.usecase.answer.CreateAnswerUseCase;
 import br.alura.ForumHub.application.usecase.answer.CreateAnswerUseCase.CreateAnswerRequest;
-import br.alura.ForumHub.domain.entity.Topic;
-import br.alura.ForumHub.domain.entity.User;
+import br.alura.ForumHub.factory.TopicFactory;
+import br.alura.ForumHub.factory.UserFactory;
 import br.alura.ForumHub.infra.persistence.repository.AnswerRepositoryImpl;
 import br.alura.ForumHub.infra.persistence.repository.TopicRepositoryImpl;
 import br.alura.ForumHub.infra.persistence.repository.UserRepositoryImpl;
+import lombok.RequiredArgsConstructor;
 
 @SpringBootTest
+@RequiredArgsConstructor
 public class CreateAnswerUseCaseTest {
   @Autowired
   private CreateAnswerUseCase createAnswerUseCase;
@@ -36,18 +38,24 @@ public class CreateAnswerUseCaseTest {
   @Autowired
   private AnswerRepositoryImpl answerRepository;
 
+  @Autowired
+  private UserFactory userFactory;
+
+  @Autowired
+  private TopicFactory topicFactory;
+
   @BeforeEach
   void clearDatabase() {
-    userRepository.deleteAll();
-    topicRepository.deleteAll();
     answerRepository.deleteAll();
+    topicRepository.deleteAll();
+    userRepository.deleteAll();
   }
 
   @Test
   @DisplayName("Should create an answer successfully")
   void testCreateAnswer() {
-    var user = createUser();
-    var topic = createTopic(user.getId());
+    var user = userFactory.persisteUser();
+    var topic = topicFactory.persisteTopic(user.getId());
 
     var answerData = new CreateAnswerRequest(
         "This is a test answer content",
@@ -65,8 +73,8 @@ public class CreateAnswerUseCaseTest {
   @Test
   @DisplayName("Should not create an answer with non-existent topic and user")
   void testCreateAnswerWithNonTopicAndUser() {
-    var user = createUser();
-    var topic = createTopic(user.getId());
+    var user = userFactory.persisteUser();
+    var topic = topicFactory.persisteTopic(user.getId());
 
     var answerDataWithoutUser = new CreateAnswerRequest(
         "This is a test answer content",
@@ -87,10 +95,10 @@ public class CreateAnswerUseCaseTest {
   @Test
   @DisplayName("Should not create a answer with a inactive user")
   void testCreateAnswerWithInactiveUser() {
-    var domainUser = new User("John Doe", "johndoe", "johndoe@example.com", "123456");
+    var domainUser = UserFactory.makeUser();
     domainUser.deactivate();
     var user = userRepository.save(domainUser);
-    var topic = createTopic(user.getId());
+    var topic = topicFactory.persisteTopic(user.getId());
 
     var answerData = new CreateAnswerRequest(
         "This is a test answer content",
@@ -104,10 +112,10 @@ public class CreateAnswerUseCaseTest {
   @Test
   @DisplayName("Should not create a answer with an inactive topic")
   void testCreateAnswerWithInactiveTopic() {
-    var user = createUser();
-    var domainTopic = new Topic("Test Topic", "This is a test topic content", user.getId());
-    domainTopic.setActive(false);
-    var topic = topicRepository.create(domainTopic);
+    var user = userFactory.persisteUser();
+    var topic = topicFactory.persisteTopic(user.getId());
+    topic.setActive(false);
+    topic = topicRepository.update(topic);
 
     var answerData = new CreateAnswerRequest(
         "This is a test answer content",
@@ -116,15 +124,5 @@ public class CreateAnswerUseCaseTest {
 
     var exception = assertThrows(InactiveResourceException.class, () -> createAnswerUseCase.execute(answerData));
     assertThat(exception.getMessage()).contains(topic.getTitle());
-  }
-
-  private User createUser() {
-    var user = userRepository.save(new User("John Doe", "johndoe", "johndoe@example.com", "123456"));
-    return user;
-  }
-
-  private Topic createTopic(UUID userId) {
-    var topic = new Topic("Test Topic", "This is a test topic content", userId);
-    return topicRepository.create(topic);
   }
 }

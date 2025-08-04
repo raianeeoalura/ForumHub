@@ -14,13 +14,13 @@ public class SpringDocConfiguration {
   @Bean
   public OpenAPI customOpenAPI() {
     return new OpenAPI()
-        .info(apiInfo())
         .components(new Components()
-            .addSecuritySchemes("bearerAuth",
+            .addSecuritySchemes("bearer-key",
                 new SecurityScheme()
                     .type(SecurityScheme.Type.HTTP)
                     .scheme("bearer")
-                    .bearerFormat("JWT")));
+                    .bearerFormat("JWT")))
+        .info(apiInfo());
   }
 
   private Info apiInfo() {
