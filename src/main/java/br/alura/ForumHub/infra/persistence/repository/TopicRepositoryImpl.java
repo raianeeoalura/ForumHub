@@ -89,6 +89,11 @@ public class TopicRepositoryImpl implements TopicRepository {
     return topicsDB.stream().map(this::toDomain).collect(Collectors.toList());
   }
 
+  @Override
+  public void delete(UUID topicId) {
+    topicJpaRepository.deleteById(topicId);
+  }
+
   private Topic toDomain(TopicDB dbTopic) {
     Topic topic = new Topic(
         dbTopic.getId(),

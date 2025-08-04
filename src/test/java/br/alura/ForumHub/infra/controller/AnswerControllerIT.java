@@ -19,14 +19,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import br.alura.ForumHub.factory.TopicFactory;
 import br.alura.ForumHub.factory.UserFactory;
 import br.alura.ForumHub.infra.dto.CreateAnswerRequestDTO;
+import br.alura.ForumHub.infra.persistence.entity.UserDB;
 import br.alura.ForumHub.infra.persistence.repository.AnswerRepositoryImpl;
 import br.alura.ForumHub.infra.persistence.repository.TopicRepositoryImpl;
 import br.alura.ForumHub.infra.persistence.repository.UserRepositoryImpl;
+import br.alura.ForumHub.infra.security.TokenService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 class AnswerControllerIT {
+
+  @Autowired
+  private TokenService tokenService;
 
   @Autowired
   private MockMvc mockMvc;
@@ -63,16 +68,19 @@ class AnswerControllerIT {
     var user = userFactory.persisteUser();
     var topic = topicFactory.persisteTopic(user.getId());
 
-    var request = new CreateAnswerRequestDTO("This is a new answer", topic.getId().toString(), user.getId().toString());
+    var request = new CreateAnswerRequestDTO("This is a new answer", topic.getId().toString());
     var json = createAnswerRequestJson.write(request).getJson();
+
+    var userDB = new UserDB(user);
+    var token = tokenService.generateToken(userDB);
 
     mockMvc.perform(
         post("/answers")
             .contentType("application/json")
+            .header("Authorization", "Bearer " + token)
             .content(json))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.content", is(request.content())))
-        .andExpect(jsonPath("$.topicId", is(request.topicId().toString())))
-        .andExpect(jsonPath("$.authorId", is(request.authorId().toString())));
+        .andExpect(jsonPath("$.topicId", is(request.topicId().toString())));
   }
 }

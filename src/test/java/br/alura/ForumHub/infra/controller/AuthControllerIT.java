@@ -57,4 +57,21 @@ public class AuthControllerIT {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").exists());
   }
+
+  @Test
+  @DisplayName("[POST /auth] Should return 403 Forbidden when credentials are invalid")
+  void testInvalidToken() throws Exception {
+    var user = userFactory.persisteUser("John Doe", "johndoe", "johndoe@example.com", "123456");
+
+    var request = new AuthenticateWithCredentialsRequest(
+        user.getUsername().getValue(),
+        "12345");
+    String requestJson = authenticateWithCredentialsRequestJson.write(request).getJson();
+
+    mockMvc.perform(
+        post("/auth")
+            .contentType("application/json")
+            .content(requestJson))
+        .andExpect(status().isForbidden());
+  }
 }

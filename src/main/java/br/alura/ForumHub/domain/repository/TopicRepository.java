@@ -17,4 +17,6 @@ public interface TopicRepository {
   Optional<Topic> findBySlug(String slug);
 
   List<Topic> findMany(int page, int size);
+
+  void delete(UUID topicId);
 }
