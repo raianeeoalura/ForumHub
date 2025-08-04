@@ -13,8 +13,8 @@ public record BasicAnswerData(UUID id, String content, UUID topicId, UUID author
     this(
         answer.getId(),
         answer.getContent(),
-        answer.getAuthorId(),
         answer.getTopicId(),
+        answer.getAuthorId(),
         answer.getCreatedAt(),
         answer.getViewCount());
   }
